@@ -19,7 +19,8 @@
     "superagent": "^0.17.0",
     "urlencode": "^0.1.2",
     "bufferhelper": "^0.2.0",
-    "logfmt": "^1.1.2"
+    "logfmt": "^1.1.2",
+    "newrelic": "^1.5.1"
   },
   "engines": {
     "node": "0.10.x"
