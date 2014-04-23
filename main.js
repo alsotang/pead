@@ -10,6 +10,8 @@ var urlencode = require('urlencode');
 var BufferHelper = require('bufferhelper');
 var logfmt = require("logfmt");
 
+var queryCache = {};
+
 var app = express();
 
 app.set('views', path.join(__dirname, 'views'));
@@ -40,6 +42,10 @@ app.get('/query', function (req, res) {
   formData = qs.stringify(formData);
   formData = formData + '&xm=' + urlencode(req.query.xm, 'gbk');
 
+  if (queryCache[formData]) {
+    return res.send(queryCache[formData]);
+  }
+
   var ep = new eventproxy();
   ep.on('login', function () {
     agent
@@ -48,7 +54,9 @@ app.get('/query', function (req, res) {
       .end(function (err, result) {
         var $ = cheerio.load(result.text);
         res.set('content-type', 'text/html;charset=utf-8');
-        res.send($('body').html() || '参数有错或无数据');
+        var body = $('body').html() || '参数有错或无数据';
+        queryCache[formData] = body;
+        res.send(body);
       });
   });
   agent
