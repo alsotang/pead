@@ -8,6 +8,7 @@ var iconv = require('iconv-lite');
 var eventproxy = require('eventproxy');
 var urlencode = require('urlencode');
 var BufferHelper = require('bufferhelper');
+var logfmt = require("logfmt");
 
 var app = express();
 
@@ -15,7 +16,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(bodyParser());
-
+app.use(logfmt.requestLogger());
 app.get('/', function (req, res) {
   res.render('index');
 });
@@ -58,6 +59,7 @@ app.get('/query', function (req, res) {
     });
 });
 
-app.listen(3000, function () {
-  console.log('app is listening at port 3000...');
+var port = Number(process.env.PORT || 3000);
+app.listen(port, function () {
+  console.log('app is listening at port ' + port + '...');
 });

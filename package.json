@@ -18,7 +18,8 @@
     "qs": "^0.6.6",
     "superagent": "^0.17.0",
     "urlencode": "^0.1.2",
-    "bufferhelper": "^0.2.0"
+    "bufferhelper": "^0.2.0",
+    "logfmt": "^1.1.2"
   },
   "engines": {
     "node": "0.10.x"
