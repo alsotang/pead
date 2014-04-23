@@ -19,5 +19,8 @@
     "superagent": "^0.17.0",
     "urlencode": "^0.1.2",
     "bufferhelper": "^0.2.0"
+  },
+  "engines": {
+    "node": "0.10.x"
   }
 }
