@@ -25,9 +25,9 @@ app.get('/query', function (req, res) {
   var formData = {
     xh: req.query.xh,
     xb: req.query.xb,
+    xm: req.query.xm,
   };
-  formData = qs.stringify(formData);
-  formData += '&xm=' + urlencode(req.query.xm, 'gbk');
+  formData = urlencode.stringify(formData, {charset: 'gbk'});
 
   if (queryCache[formData]) {
     return res.send(queryCache[formData]);

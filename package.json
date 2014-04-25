@@ -21,7 +21,7 @@
     "qs": "^0.6.6",
     "superagent": "^0.17.0",
     "superagentparse": "^0.1.1",
-    "urlencode": "^0.1.2"
+    "urlencode": "^0.2.0"
   },
   "engines": {
     "node": "0.10.x"
