@@ -34,6 +34,13 @@ app.get('/query', function (req, res) {
   }
 
   var ep = new eventproxy();
+  agent
+    .post('http://pead.scu.edu.cn/jncx/logins.asp')
+    .send(formData)
+    .parse(superagentparse('gbk'))
+    .end(function (err, result) {
+      ep.emitLater('login');
+    });
   ep.on('login', function () {
     agent
       .get('http://pead.scu.edu.cn/jncx/tcsh2.asp')
@@ -46,13 +53,6 @@ app.get('/query', function (req, res) {
         res.send(body);
       });
   });
-  agent
-    .post('http://pead.scu.edu.cn/jncx/logins.asp')
-    .send(formData)
-    .parse(superagentparse('gbk'))
-    .end(function (err, result) {
-      ep.emitLater('login');
-    });
 });
 
 var port = Number(process.env.PORT || 3000);
