@@ -1,15 +1,11 @@
-require('newrelic');
-
 var express = require('express');
-var bodyParser = require('body-parser');
 var path = require('path');
 var superagent = require('superagent');
+var superagentparse = require('superagentparse');
 var cheerio = require('cheerio');
 var qs = require('qs');
-var iconv = require('iconv-lite');
 var eventproxy = require('eventproxy');
 var urlencode = require('urlencode');
-var BufferHelper = require('bufferhelper');
 var logfmt = require("logfmt");
 
 var queryCache = {};
@@ -19,7 +15,6 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(bodyParser());
 app.use(logfmt.requestLogger());
 app.get('/', function (req, res) {
   res.render('index');
@@ -27,22 +22,12 @@ app.get('/', function (req, res) {
 
 app.get('/query', function (req, res) {
   var agent = superagent.agent();
-  var parseText = function(res, done) {
-    res.text = new BufferHelper();
-    res.on('data', function (chunk) {
-      res.text.concat(chunk);
-    });
-    res.on('end', function() {
-      res.text = iconv.decode(res.text.toBuffer(), 'gbk');
-      done();
-    });
-  };
   var formData = {
     xh: req.query.xh,
     xb: req.query.xb,
   };
   formData = qs.stringify(formData);
-  formData = formData + '&xm=' + urlencode(req.query.xm, 'gbk');
+  formData += '&xm=' + urlencode(req.query.xm, 'gbk');
 
   if (queryCache[formData]) {
     return res.send(queryCache[formData]);
@@ -52,10 +37,10 @@ app.get('/query', function (req, res) {
   ep.on('login', function () {
     agent
       .get('http://pead.scu.edu.cn/jncx/tcsh2.asp')
-      .parse(parseText)
+      .parse(superagentparse('gbk'))
       .end(function (err, result) {
         var $ = cheerio.load(result.text);
-        res.set('content-type', 'text/html;charset=utf-8');
+        res.type('html');
         var body = $('body').html() || '参数有错或无数据';
         queryCache[formData] = body;
         res.send(body);
@@ -64,6 +49,7 @@ app.get('/query', function (req, res) {
   agent
     .post('http://pead.scu.edu.cn/jncx/logins.asp')
     .send(formData)
+    .parse(superagentparse('gbk'))
     .end(function (err, result) {
       ep.emitLater('login');
     });
