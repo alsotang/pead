@@ -1,1 +1,1 @@
-web: node main.js
+web: ./node_modules/.bin/pm2 start main.js -i max --name "pead" --no-daemon
